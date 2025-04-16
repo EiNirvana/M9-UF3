@@ -13,7 +13,7 @@ public class Client {
     public void connecta() throws IOException {
         socket = new Socket(HOST, PORT);
         out = new PrintWriter(socket.getOutputStream(), true);
-        System.out.println("Connectat al servidor.");
+        System.out.println("Connectat al servidor en " + HOST + ":" + PORT);
     }
 
     public void envia(String missatge) {
@@ -26,7 +26,6 @@ public class Client {
     public void tanca() throws IOException {
         if (out != null) out.close();
         if (socket != null) socket.close();
-        System.out.println("Connexió tancada.");
     }
 
     public static void main(String[] args) {
