@@ -1,8 +1,6 @@
-
-import java.io.BufferedReader;
 import java.io.IOException;
-import java.io.InputStreamReader;
-import java.io.PrintWriter;
+import java.io.ObjectInputStream;
+import java.io.ObjectOutputStream;
 import java.net.Socket;
 import java.util.Scanner;
 
@@ -11,39 +9,47 @@ public class ClientXat {
     private static final String HOST = "localhost";   
 
     public Socket socket;
-    public PrintWriter streamOut;
-    public BufferedReader streamIn;
+    public ObjectOutputStream output;
+    public ObjectInputStream input;
     
     public void connecta() throws IOException {
         socket = new Socket(HOST, PORT);
-        streamOut = new PrintWriter(socket.getOutputStream(), true);
-        streamIn = new BufferedReader(new InputStreamReader(socket.getInputStream()));
+        output = new ObjectOutputStream(socket.getOutputStream());
+        input = new ObjectInputStream(socket.getInputStream());
         System.out.println("Client connectat al servidor en " + HOST + ":" + PORT);
     }
 
     public void tancarClient() throws IOException {
-        if (streamOut != null) streamOut.close();
+        if (output != null) output.close();
+        if (input != null) input.close();
         if (socket != null) socket.close();
     }
 
-    public void enviarMissatge(String missatge) {
-        if (streamOut != null) {
-            streamOut.println(missatge);
-            System.out.println("Enviant missatge: " + missatge);
+    public void enviarMissatge(String missatge) throws IOException {
+        if (output != null) {
+            output.writeObject(missatge);
+            output.flush();
+            System.out.println("Enviat: " + missatge);
         }
     }
 
     public static void main(String[] args) {
         ClientXat client = new ClientXat();
+        Scanner scanner = new Scanner(System.in);
+
         try {
             client.connecta();
 
-            client.enviarMissatge("Prova d'enviament 1");
-            client.enviarMissatge("Prova d'enviament 2");
-            client.enviarMissatge("Adeu!");
+            System.out.print("Introdueix el teu nom: ");
+            String nom = scanner.nextLine();
+            client.enviarMissatge(nom); // Primer missatge: el nom del client
 
-            System.out.println("Prem ENTER per tancar...");
-            new Scanner(System.in).nextLine();
+            String missatge;
+            do {
+                System.out.print("Tu: ");
+                missatge = scanner.nextLine();
+                client.enviarMissatge(missatge);
+            } while (!missatge.equalsIgnoreCase("sortir"));
 
             client.tancarClient();
             System.out.println("Client tancat");
@@ -51,5 +57,4 @@ public class ClientXat {
             e.printStackTrace();
         }
     }
-
 }
