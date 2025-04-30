@@ -13,7 +13,7 @@ public class Client {
     public void connecta() throws IOException {
         socket = new Socket(HOST, PORT);
         out = new PrintWriter(socket.getOutputStream(), true);
-        System.out.println("Connectat al servidor en " + HOST + ":" + PORT);
+        System.out.println("Client connectat al servidor en " + HOST + ":" + PORT);
     }
 
     public void envia(String missatge) {

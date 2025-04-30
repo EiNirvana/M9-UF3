@@ -11,7 +11,7 @@ public class Servidor {
     public Socket clientSocket;
     public ServerSocket srvSocket;
 
-     public void connecta() throws IOException {
+    public void connecta() throws IOException {
         srvSocket = new ServerSocket(PORT);
         System.out.println("Servidor en marxa a " + HOST + ":" + PORT);
         System.out.println("Esperant connexions a " + HOST + ":" + PORT);
